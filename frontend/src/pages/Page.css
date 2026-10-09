@@ -1,0 +1,302 @@
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;           /* กลับมา centered เหมือนเดิม ไม่ shift ซ้าย */
+  padding: 110px 24px 60px;
+  font-family: 'DM Sans', sans-serif;
+  color: #16161f;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* =========================
+   SEARCH SECTION
+========================= */
+
+.candidate-search-section {
+  max-width: 900px;
+  margin: 0 auto 48px;
+
+  text-align: center;
+}
+
+
+/* ---------- Header ---------- */
+
+.candidate-search-header {
+  margin-bottom: 26px;
+}
+
+.search-eyebrow {
+  display: inline-block;
+
+  padding: 6px 12px;
+
+  margin-bottom: 14px;
+
+  border-radius: 999px;
+
+  background: #fde7ee;
+  color: #c21f4d;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.candidate-search-header h1 {
+  margin: 0 0 12px;
+
+  font-family: "Sora", "Inter", sans-serif;
+
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: -0.02em;
+}
+
+.candidate-search-header p {
+  max-width: 620px;
+
+  margin: 0 auto;
+
+  color: #6e7180;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================
+   SEARCH BOX
+========================= */
+
+.candidate-search-box {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 7px;
+
+  background: #fff;
+
+  border: 1px solid rgba(22, 22, 31, 0.12);
+
+  border-radius: 999px;
+
+  box-shadow:
+    0 8px 24px rgba(22, 22, 31, 0.06);
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.candidate-search-box:focus-within {
+  border-color: #e9295f;
+
+  box-shadow:
+    0 0 0 4px #fde7ee,
+    0 8px 24px rgba(22, 22, 31, 0.06);
+}
+
+
+/* ---------- Input ---------- */
+
+.candidate-search-input-wrapper {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+
+  min-width: 0;
+}
+
+.candidate-search-icon {
+  flex-shrink: 0;
+
+  margin-left: 14px;
+
+  color: #6e7180;
+}
+
+.candidate-search-input-wrapper input {
+  width: 100%;
+
+  height: 44px;
+
+  padding: 0 16px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #16161f;
+
+  font-family: "Inter", system-ui, sans-serif;
+
+  font-size: 14px;
+}
+
+.candidate-search-input-wrapper input::placeholder {
+  color: #9a9daa;
+}
+
+
+/* ---------- Search Button ---------- */
+
+.candidate-search-button {
+  flex-shrink: 0;
+
+  height: 44px;
+
+  padding: 0 24px;
+
+  border: none;
+
+  border-radius: 999px;
+
+  background: #e9295f;
+
+  color: #fff;
+
+  font-family: "Inter", system-ui, sans-serif;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.candidate-search-button:hover {
+  background: #c21f4d;
+}
+
+.candidate-search-button:active {
+  transform: scale(0.96);
+}
+
+
+/* =========================
+   RESULTS SECTION
+========================= */
+
+.candidate-results-section {
+  position: relative;
+
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 0 auto;
+}
+.candidate-results {
+  width: 900px;
+  max-width: 900px;
+
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+.candidate-results-section > .sidebar {
+  position: absolute;
+  width: 240px;
+  left: calc(50% - 750px);
+  top: 0;
+}
+
+
+/* =========================
+   RESULTS HEADER
+========================= */
+
+.results-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+
+  padding-bottom: 14px;
+
+  border-bottom: 1px solid rgba(22, 22, 31, 0.08);
+}
+
+.results-header h2 {
+  margin: 0;
+
+  font-family: "Sora", "Inter", sans-serif;
+
+  font-size: 18px;
+
+  font-weight: 700;
+}
+
+.results-header span {
+  color: #6e7180;
+
+  font-size: 13px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+
+  .page-container {
+    padding: 95px 20px 40px;
+  }
+
+  .candidate-results-section {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 560px) {
+
+  .candidate-search-section {
+    margin-bottom: 32px;
+  }
+
+  .candidate-search-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .candidate-search-header p {
+    font-size: 14px;
+  }
+
+  .candidate-search-box {
+    border-radius: 18px;
+
+    padding: 8px;
+
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .candidate-search-input-wrapper {
+    width: 100%;
+  }
+
+  .candidate-search-button {
+    width: 100%;
+  }
+
+}

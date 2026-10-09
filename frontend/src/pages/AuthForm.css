@@ -1,0 +1,205 @@
+.auth-form h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: bold;
+    color: #000;
+}
+
+.auth-form label {
+    font-size: 16px;
+    color: #000;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.auth-form input:not([type="checkbox"]) {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #334155;
+    color: #000;
+    outline: none;
+    transition: 0.2s;
+    font-weight: 500;
+    box-sizing: border-box;
+}
+
+.auth-form input:not([type="checkbox"]):focus {
+    border-color: #E21D50;
+    box-shadow: 0 0 0 2px rgba(226, 29, 80, 0.1);
+}
+
+
+/* =========================
+   Terms & Conditions
+========================= */
+
+.terms-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin: 8px 0 20px;
+}
+
+.terms-container input[type="checkbox"] {
+    appearance: none;
+    width: 17px;
+    height: 17px;
+    min-width: 17px;
+    margin: 2px 0 0;
+    border: 1.5px solid #334155;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+}
+
+.terms-container input[type="checkbox"]:checked {
+    background-color: #E21D50;
+    border-color: #E21D50;
+}
+
+.terms-container input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    left: 3px;
+    top: -1px;
+}
+
+.terms-container label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.terms-link {
+    color: #E21D50;
+    font-weight: 600;
+    cursor: pointer;
+    background: none;
+    border: none;
+    
+}
+
+.terms-link:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   Register Button
+========================= */
+
+.auth-form button[type="submit"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   Sign In
+========================= */
+
+.signin-text {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.link-btn {
+    background: none;
+    border: none;
+    color: #E21D50;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.link-btn:hover {
+    text-decoration: underline;
+    color: #871131;
+}
+
+.link-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: #AAAAAA;
+}
+
+/* =========================
+   Terms Modal
+========================= */
+
+.terms-modal {
+    width: 100%;
+    max-width: 520px;
+}
+
+.terms-modal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #000;
+}
+/* Scrollable content */
+
+.terms-content {
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+
+/* Section */
+
+.terms-content section {
+    margin-bottom: 18px;
+}
+
+.terms-content h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    color: #000;
+}
+
+.terms-content p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #666;
+}
+
+
+/* Close Button */
+
+.terms-close-btn {
+    display: block;
+    margin: 20px auto 0;
+
+    padding: 9px 28px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #334155;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.terms-close-btn:hover {
+    background: #0d172a;
+}

@@ -1,0 +1,166 @@
+/* ── Sidebar Shell ─────────────────────────────────────────── */
+.sidebar {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  background-color: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 16px;
+
+  padding: 24px 20px;
+
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+
+  align-self: start;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 17px;
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: -0.2px;
+}
+
+.filter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #E21D50;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 100px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+}
+
+/* ── Divider ───────────────────────────────────────────────── */
+.filter-divider {
+  height: 1px;
+  background-color: #f2f2f2;
+  margin: 0;
+}
+
+/* ── Section ───────────────────────────────────────────────── */
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #999999;
+}
+
+/* ── Checkbox Items ────────────────────────────────────────── */
+.item-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.filter-label:hover {
+  background-color: #fdf0f4;
+  color: #E21D50;
+}
+
+.filter-label.active {
+  background-color: #fff0f4;
+  color: #E21D50;
+}
+
+/* ── Custom Checkbox ───────────────────────────────────────── */
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 17px;
+  height: 17px;
+  border: 2px solid #d4d4d4;
+  border-radius: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  position: relative;
+}
+
+.checkbox:checked {
+  background-color: #E21D50;
+  border-color: #E21D50;
+}
+
+.checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 5px;
+  height: 9px;
+  border: 2px solid #ffffff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+/* ── Button ──────────────────────────────────────────── */
+
+.apply-btn {
+  background: white;
+  border: 1.5px solid #E21D50;
+  color: #E21D50;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 8px 0;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.apply-btn:hover {
+  background-color: #E21D50;
+  color: #ffffff;
+}
+
+.clear-btn {
+  background: none;
+  border: 1.5px solid #E21D50;
+  color: #E21D50;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 8px 0;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.clear-btn:hover {
+  background-color: #E21D50;
+  color: #ffffff;
+}
