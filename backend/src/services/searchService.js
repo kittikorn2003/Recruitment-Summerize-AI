@@ -1,13 +1,13 @@
-const { searchResume } = require("../models/resumeModel")
-const { embedding } = require("./resumeService")
+const { searchResume } = require("../models/resumeModel");
 
-const searchResumeService = async (keyword,languages = []) => {
+const searchResumeService = async (keyword, languages = []) => {
+    const cleanKeyword = keyword?.trim() || "";
 
-    // if(!keyword?.trim()) {
-    //     throw new Error("Keyword required")
-    // }
-    const queryEmbedding = await embedding(keyword)
-    return await searchResume(keyword,queryEmbedding,languages);
-}
+    if (!cleanKeyword && languages.length === 0) {
+        throw new Error("Keyword or language filter is required");
+    }
 
-module.exports = { searchResumeService }
+    return await searchResume(cleanKeyword, languages);
+};
+
+module.exports = { searchResumeService };
