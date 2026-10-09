@@ -1,14 +1,12 @@
 
 const pdfParse = require("pdf-parse");
 const path = require("path");
-const multer = require("multer");
 const { extractResumeData } = require("../services/aiServices");
-const { createResume } = require("../models/uploadModel");
 const { findResumeById,getAllResumeFromDb } = require("../models/resumeModel")
 const { saveResume } = require("../services/resumeService")
 
 const fs = require("fs")
-console.log(pdfParse)
+// console.log(pdfParse)
 const resumeDir = path.join(__dirname,"../uploads/resumes");
 const tmpResumeDir = path.join(__dirname,"../uploads/tmp_resumes")
 
@@ -42,7 +40,7 @@ const saveFile = async (req,res) => {
     try{
         const userId = req.user.id;
         const resumeJson = req.body;
-        if (!resumeJson) {
+        if (!resumeJson || !resumeJson.file_name) {
             return res.status(400).json({
                 message: "No data provided or missing file name" 
             });
