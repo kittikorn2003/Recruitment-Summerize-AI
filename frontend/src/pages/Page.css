@@ -1,7 +1,7 @@
 .page-container {
   max-width: 1200px;
   margin: 0 auto;           /* กลับมา centered เหมือนเดิม ไม่ shift ซ้าย */
-  padding: 110px 24px 60px;
+  padding: 50px 24px 60px;
   font-family: 'DM Sans', sans-serif;
   color: #16161f;
   min-height: 100vh;
@@ -23,22 +23,22 @@
 /* ---------- Header ---------- */
 
 .candidate-search-header {
-  margin-bottom: 26px;
+  margin-bottom: 20px;
 }
 
 .search-eyebrow {
   display: inline-block;
 
-  padding: 6px 12px;
+  padding: 5px 10px;
 
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 
   border-radius: 999px;
 
   background: #fde7ee;
   color: #c21f4d;
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 
   letter-spacing: 0.06em;
@@ -50,7 +50,7 @@
 
   font-family: "Sora", "Inter", sans-serif;
 
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
 
   line-height: 1.2;
 
@@ -60,13 +60,13 @@
 }
 
 .candidate-search-header p {
-  max-width: 620px;
+  max-width: 520px;
 
   margin: 0 auto;
 
   color: #6e7180;
 
-  font-size: 15px;
+  font-size: 13.5px;
 
   line-height: 1.6;
 }
@@ -80,9 +80,9 @@
   display: flex;
   align-items: center;
 
-  gap: 10px;
+  gap: 8px;
 
-  padding: 7px;
+  padding: 5px;
 
   background: #fff;
 
@@ -121,7 +121,9 @@
 .candidate-search-icon {
   flex-shrink: 0;
 
-  margin-left: 14px;
+  margin-left: 12px;
+  width: 18px;  
+  height: 18px;
 
   color: #6e7180;
 }
@@ -129,9 +131,9 @@
 .candidate-search-input-wrapper input {
   width: 100%;
 
-  height: 44px;
+  height: 38px;
 
-  padding: 0 16px;
+  padding: 0 12px;
 
   border: none;
   outline: none;
@@ -142,7 +144,7 @@
 
   font-family: "Inter", system-ui, sans-serif;
 
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .candidate-search-input-wrapper input::placeholder {
@@ -155,9 +157,9 @@
 .candidate-search-button {
   flex-shrink: 0;
 
-  height: 44px;
+  height: 38px;
 
-  padding: 0 24px;
+  padding: 0 20px;
 
   border: none;
 
@@ -169,7 +171,7 @@
 
   font-family: "Inter", system-ui, sans-serif;
 
-  font-size: 14px;
+  font-size: 13px;
 
   font-weight: 600;
 

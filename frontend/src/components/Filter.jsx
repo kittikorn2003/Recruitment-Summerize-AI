@@ -2,12 +2,10 @@ import React from "react";
 import "./Filter.css";
 import CheckboxGroup from "./CheckboxGroup";
 
-const languageOptions = ["English", "Thai", "Chinese", "Arabic", "Japanes"];
+const languageOptions = ["English", "Thai", "Chinese", "Arabic", "Japanese"];
 const experienceOptions = ["<1 Year", "1-3 Years", "3-5 Years", ">5 Years"];
 
 function Filter({ searchParams, setSearchParams, searchResume }) {
-
-  // ฟังก์ชัน toggle เดียวใช้ร่วมกันทั้งสอง filter (ตามที่คุยไปก่อนหน้า)
   const toggleFilter = (key, value) => {
     setSearchParams((prev) => {
       const isSelected = prev[key].includes(value);
@@ -28,13 +26,27 @@ function Filter({ searchParams, setSearchParams, searchResume }) {
     }));
   };
 
+  const activeCount =
+    searchParams.experience.length + searchParams.languages.length;
+
   return (
     <div className="sidebar">
       <div className="filter-header">
-        <span>Filters</span>
-      </div>
+        <div className="filter-header-title">
+          <span>Filters</span>
+          {activeCount > 0 && (
+            <span className="filter-badge">{activeCount}</span>
+          )}
+        </div>
 
-      <div className="filter-divider" />
+        <button
+          className="filter-clear-link"
+          onClick={handleClearFilters}
+          disabled={activeCount === 0}
+        >
+          Clear all
+        </button>
+      </div>
 
       <CheckboxGroup
         title="Experience"
@@ -43,8 +55,6 @@ function Filter({ searchParams, setSearchParams, searchResume }) {
         onToggle={(opt) => toggleFilter("experience", opt)}
       />
 
-      <div className="filter-divider" />
-
       <CheckboxGroup
         title="Language"
         options={languageOptions}
@@ -52,14 +62,8 @@ function Filter({ searchParams, setSearchParams, searchResume }) {
         onToggle={(opt) => toggleFilter("languages", opt)}
       />
 
-      <div className="filter-divider" />
-
       <button className="apply-btn" onClick={searchResume}>
         Apply Filters
-      </button>
-
-      <button className="clear-btn" onClick={handleClearFilters}>
-        Clear all filters
       </button>
     </div>
   );
