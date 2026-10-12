@@ -2,7 +2,7 @@
 const pdfParse = require("pdf-parse");
 const path = require("path");
 const { extractResumeData } = require("../services/aiServices");
-const { findResumeById,getAllResumeFromDb,getLatestResumes  } = require("../models/resumeModel")
+const { findResumeById,getAllResumeFromDb,getLatestResumes,countResumes   } = require("../models/resumeModel")
 const { saveResume } = require("../services/resumeService")
 
 const fs = require("fs")
@@ -108,8 +108,8 @@ const getResume = async (req,res) => {
 
 const getLatestResumesController = async (req, res) => {
     try {
-        const rawLimit = req.query.limit ?? "30";
-        const limit = Number(rawLimit);
+        const limit = Number(req.query.limit ?? "6");
+        const page = Number(req.query.page ?? "1");
 
         if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
             return res.status(400).json({
@@ -118,9 +118,21 @@ const getLatestResumesController = async (req, res) => {
             });
         }
 
-        const data = await getLatestResumes(limit);
+        if (!Number.isInteger(page) || page < 1) {
+            return res.status(400).json({
+                success: false,
+                message: "page must be an integer >= 1",
+            });
+        }
 
-        return res.status(200).json({ data });
+        const offset = (page - 1) * limit;
+
+        const [data, total] = await Promise.all([
+            getLatestResumes(limit, offset),
+            countResumes(),
+        ]);
+
+        return res.status(200).json({ data, total, page, limit });
     } catch (error) {
         console.error("Get latest resumes error:", error);
 

@@ -1,16 +1,12 @@
 import React from "react";
 import "./Page.css";
-import { Search } from "lucide-react";
-
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import Filter from "../components/Filter";
 import Content from "../components/Content";
 
 function Page({
-  results,
-  hasSearched,
-  searchParams,
-  setSearchParams,
-  searchResume,
+  results, hasSearched, searchParams, setSearchParams, searchResume,
+  page, total, pageSize, onPageChange,
 }) {
 
   const handleSearch = () => {
@@ -21,6 +17,17 @@ function Page({
     if (e.key === "Enter") {
       searchResume();
     }
+  };
+
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  const visibleResults = hasSearched
+    ? results.slice((page - 1) * pageSize, page * pageSize)
+    : results;
+
+  const goTo = (p) => {
+    onPageChange(p);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -95,19 +102,26 @@ function Page({
         />
 
         <div className="candidate-results">
+          <div className="results-header">
+            <h2>{hasSearched ? "Search Results" : "Latest Candidates"}</h2>
+            <span>
+              {hasSearched ? `${total} candidates found` : `${total} candidates`}
+            </span>
+          </div>
 
-          {hasSearched && (
-            <div className="results-header">
-              <h2>Search Results</h2>
+          <Content contentData={visibleResults} />
 
-              <span>
-                {results.length} candidates found
-              </span>
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button className="pagination-btn" onClick={() => goTo(page - 1)} disabled={page === 1}>
+                <ChevronLeft size={16} /> Previous
+              </button>
+              <span className="pagination-info">Page {page} of {totalPages}</span>
+              <button className="pagination-btn" onClick={() => goTo(page + 1)} disabled={page === totalPages}>
+                Next <ChevronRight size={16} />
+              </button>
             </div>
           )}
-
-          <Content contentData={results} />
-
         </div>
 
       </section>

@@ -14,7 +14,12 @@ const getAllResumeFromDb = async () => {
     return result.rows;
 }
 
-const searchResume = async (keyword, languages = []) => {
+const searchResume = async (
+    keyword,
+    languages = [],
+    limit = 7,
+    offset = 0
+) => {
     const params = [keyword];
     let languageFilter = "";
 
@@ -24,6 +29,12 @@ const searchResume = async (keyword, languages = []) => {
             AND r.spoken_languages && $${params.length}::text[]
         `;
     }
+
+    params.push(limit);
+    const limitParam = `$${params.length}`;
+
+    params.push(offset);
+    const offsetParam = `$${params.length}`;
 
     const result = await pool.query(
         `
@@ -46,7 +57,8 @@ const searchResume = async (keyword, languages = []) => {
             )
             ${languageFilter}
         ORDER BY r.created_at DESC, r.id DESC
-        LIMIT 6;
+        LIMIT ${limitParam}
+        OFFSET ${offsetParam};
         `,
         params
     );
@@ -77,6 +89,11 @@ const getLatestResumes = async (limit = 6, offset = 0) => {
     return result.rows;
 };
 
+const countResumes = async () => {
+    const result = await pool.query(`SELECT COUNT(*)::int AS total FROM resumes`);
+    return result.rows[0].total;
+};
+
 module.exports = {
-    findResumeById,getAllResumeFromDb,searchResume,getLatestResumes
+    findResumeById,getAllResumeFromDb,searchResume,getLatestResumes,countResumes,
 };

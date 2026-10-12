@@ -34,6 +34,9 @@ function App() {
     languages: [],
     experience: [],
   })
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const PAGE_SIZE = 6;
   // const isLandingPage = location.pathname === '/';
 
   // console.log("For results",results);
@@ -72,50 +75,64 @@ function App() {
     }
   }
 
+  const fetchLatest = async (p = 1) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(
+      `http://localhost:3000/api/resumes/latest?page=${p}&limit=${PAGE_SIZE}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    setResults(response.data.data);
+    setTotal(response.data.total);
+    setPage(p);
+    setHasSearched(false);
+  } catch (err) {
+    console.error("Fetch latest error", err);
+  }
+};
+
   const searchResume = async () => {
+    const isEmpty =
+      !searchParams.q.trim() && searchParams.languages.length === 0;
+
+    if (isEmpty) return fetchLatest(1);
+
     try {
       const params = new URLSearchParams();
-      
-      if (searchParams.q.trim()) {
-        params.append("q", searchParams.q);
-      }
-
+      if (searchParams.q.trim()) params.append("q", searchParams.q.trim());
       if (searchParams.languages.length) {
-        params.append(
-          "languages",
-          searchParams.languages.join(",")
-        )
+        params.append("languages", searchParams.languages.join(","));
       }
-      
-      if (searchParams.experience.length) {
-        params.append (
-          "experience",
-          searchParams.experience.join(",")
-        )
-      }
-      const token = localStorage.getItem('token');
 
+      const token = localStorage.getItem('token');
       const response = await axios.get(
         `http://localhost:3000/api/resumes/search?${params.toString()}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setResults(response.data.data);
+      setTotal(response.data.data.length);
+      setPage(1);
+      setHasSearched(true);
     } catch (err) {
       console.error(err);
     }
-  }
+  };
+
   useEffect (() => {
     fetchUserData();
     fetchResumeData();
+    fetchLatest(1);
   }, []);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
   };
+
+  const handlePageChange = (p) => {
+  if (hasSearched) setPage(p);   // search: หั่นฝั่ง frontend
+  else fetchLatest(p);           // latest: ดึงจาก backend
+};
   return (
     <div className='App'>
       <Navbar
@@ -186,6 +203,10 @@ function App() {
             searchParams={searchParams}
             setSearchParams={setSearchParams}
             searchResume={searchResume}
+            page={page}
+            total={total}
+            pageSize={PAGE_SIZE}
+            onPageChange={handlePageChange}
           />
         }/>
         <Route path="/role-request" element={<RoleRequest />} />
