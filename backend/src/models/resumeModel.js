@@ -47,7 +47,9 @@ const searchResume = async (
             r.career_summary,
             u.username,
             u.profile_image,
-            r.created_at
+            r.created_at,
+            r.address,
+            r.education
         FROM resumes r
         LEFT JOIN users u ON r.user_id = u.id
         WHERE
@@ -77,7 +79,9 @@ const getLatestResumes = async (limit = 6, offset = 0) => {
             r.career_summary,
             u.username,
             u.profile_image,
-            r.created_at
+            r.created_at,
+            r.address,
+            r.education
         FROM resumes r
         LEFT JOIN users u ON r.user_id = u.id
         ORDER BY r.created_at DESC, r.id DESC

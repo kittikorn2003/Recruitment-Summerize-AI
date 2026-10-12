@@ -15,7 +15,7 @@ router.post("/resumes/parse", authMiddleware,checkPermission("resumes:create"),r
 router.get("/resumes/latest", authMiddleware, checkPermission("resumes:read:all"), getLatestResumesController);
 router.get("/resume/:id", authMiddleware,checkAnyPermission(["resumes:read:own","resumes:read:by"]),checkResumeAccess,getResumeById);
 router.get("/resumes",authMiddleware,checkPermission("resumes:read:all"),getResume);
-router.get("/resumes/search",authMiddleware,searchResume);
+router.get("/resumes/search",authMiddleware,checkPermission("resumes:search"),searchResume);
 
 
 module.exports = router;
