@@ -16,7 +16,6 @@ const getAllResumeFromDb = async () => {
 
 const searchResume = async (keyword, languages = []) => {
     const params = [keyword];
-
     let languageFilter = "";
 
     if (languages.length > 0) {
@@ -37,13 +36,7 @@ const searchResume = async (keyword, languages = []) => {
             r.career_summary,
             u.username,
             u.profile_image,
-            CASE
-                WHEN $1 = '' THEN 0
-                ELSE ts_rank(
-                    r.search_vector,
-                    plainto_tsquery('english', $1)
-                ) * 100
-            END AS hybrid_score
+            r.created_at
         FROM resumes r
         LEFT JOIN users u ON r.user_id = u.id
         WHERE
@@ -52,17 +45,38 @@ const searchResume = async (keyword, languages = []) => {
                 OR r.search_vector @@ plainto_tsquery('english', $1)
             )
             ${languageFilter}
-        ORDER BY
-            hybrid_score DESC,
-            r.id DESC
-        LIMIT 5;
+        ORDER BY r.created_at DESC, r.id DESC
+        LIMIT 6;
         `,
         params
     );
 
     return result.rows;
 };
+const getLatestResumes = async (limit = 6, offset = 0) => {
+    const result = await pool.query(
+        `
+        SELECT
+            r.id,
+            r.full_name,
+            r.skills,
+            r.file_name,
+            r.spoken_languages,
+            r.career_summary,
+            u.username,
+            u.profile_image,
+            r.created_at
+        FROM resumes r
+        LEFT JOIN users u ON r.user_id = u.id
+        ORDER BY r.created_at DESC, r.id DESC
+        LIMIT $1 OFFSET $2;
+        `,
+        [limit, offset]
+    );
+
+    return result.rows;
+};
 
 module.exports = {
-    findResumeById,getAllResumeFromDb,searchResume
+    findResumeById,getAllResumeFromDb,searchResume,getLatestResumes
 };

@@ -2,7 +2,7 @@
 const pdfParse = require("pdf-parse");
 const path = require("path");
 const { extractResumeData } = require("../services/aiServices");
-const { findResumeById,getAllResumeFromDb } = require("../models/resumeModel")
+const { findResumeById,getAllResumeFromDb,getLatestResumes  } = require("../models/resumeModel")
 const { saveResume } = require("../services/resumeService")
 
 const fs = require("fs")
@@ -106,4 +106,29 @@ const getResume = async (req,res) => {
     }
 }
 
-module.exports = { uploadFile,getResumeById,getResume,saveFile };
+const getLatestResumesController = async (req, res) => {
+    try {
+        const rawLimit = req.query.limit ?? "30";
+        const limit = Number(rawLimit);
+
+        if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+            return res.status(400).json({
+                success: false,
+                message: "limit must be an integer between 1 and 100",
+            });
+        }
+
+        const data = await getLatestResumes(limit);
+
+        return res.status(200).json({ data });
+    } catch (error) {
+        console.error("Get latest resumes error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to retrieve latest resumes",
+        });
+    }
+};
+
+module.exports = { uploadFile,getResumeById,getResume,saveFile,getLatestResumesController, };
