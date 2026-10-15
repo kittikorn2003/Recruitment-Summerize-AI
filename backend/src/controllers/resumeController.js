@@ -132,7 +132,9 @@ const getLatestResumesController = async (req, res) => {
             countResumes(),
         ]);
 
-        return res.status(200).json({ data, total, page, limit });
+        return res.status(200).json({ data, total, page, limit,totalPages: Math.ceil(total / limit),
+            
+        });
     } catch (error) {
         console.error("Get latest resumes error:", error);
 

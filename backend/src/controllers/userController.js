@@ -23,34 +23,43 @@ const getMe = async (req, res) => {
 }
 
 const updateProfile = async (req, res) => {
-    const { id,username,email } = req.body;
     try {
         const userId = req.user.id;
-        const currentUser = await findUserById(userId)
-        if (!currentUser){
+        const { full_name, phone, username, email } = req.body;
+
+        const currentUser = await findUserById(userId);
+
+        if (!currentUser) {
             return res.status(404).json({
                 message: "User not found"
-            })
+            });
         }
 
-        const finalUsername = username ?? currentUser.username
-        const finalEmail = email ?? currentUser.email
-        const updatedUser = await updateUser(userId,finalUsername,finalEmail)
-        res.status(200).json({
-            message: "Update Successfully"
-        })
+        const updatedUser = await updateUser(userId, {
+            full_name,
+            phone,
+            username,
+            email
+        });
+
+        return res.status(200).json({
+            message: "Profile updated successfully",
+            data: updatedUser
+        });
     } catch (err) {
-        console.log(err)
-        if (err.code === "23505"){
-            return res.status(400).json({
-                message: "Username or Email already used"
-            })
+        console.error(err);
+
+        if (err.code === "23505") {
+            return res.status(409).json({
+                message: "Username or email already used"
+            });
         }
-        res.status(500).json({
-            message: "Server Error"
-        })
+
+        return res.status(500).json({
+            message: "Server error"
+        });
     }
-}
+};
 
 const changPassword = async (req,res) => {
     const { oldPassword,newPassword } = req.body;

@@ -12,6 +12,14 @@ function Navbar({
 }) {
   const [isDropdown, setIsDropDown] = useState(false);
   const navigate = useNavigate();
+  const closeDropdown = () => {
+  setIsDropDown(false);
+  };
+
+  const handleNavigate = (path) => {
+    closeDropdown();
+    navigate(path);
+  };
 
   return (
     <header className="rm-navbar">
@@ -30,13 +38,13 @@ function Navbar({
 
           <button
             className="rm-nav-link"
-            onClick={() => navigate("/search")}
+            onClick={() => handleNavigate("/search")}
           >
             SearchCandidates 
           </button>
           <button
             className="rm-nav-link"
-            onClick={() => navigate("/role-request")}
+            onClick={() => handleNavigate("/role-request")}
           >
             Request HR 
           </button>
@@ -57,7 +65,10 @@ function Navbar({
           {!user && (
             <button
               className="rm-cta-small"
-              onClick={onSignInClick}
+              onClick={() => {
+                closeDropdown();
+                onSignInClick();
+              }}
             >
               Sign In
             </button>
@@ -67,7 +78,10 @@ function Navbar({
             <div className="rm-navbar-profile">
 
               <button
-                onClick={onUploadClick}
+                onClick={() => {
+                  closeDropdown();
+                  onUploadClick();
+                }}
                 className="rm-cta-small"
               >
                 Upload
@@ -76,9 +90,9 @@ function Navbar({
               <div className="rm-profile">
                 <img
                   className="rm-profile-circle"
-                  src={`http://localhost:3000${user.profile_image}`}
+                  src={`http://localhost:3000${user.profile_image || ""}`}
                   alt="profile"
-                  onClick={() => setIsDropDown(!isDropdown)}
+                  onClick={() => setIsDropDown((prev) => !prev)}
                 />
 
                 {isDropdown && (
@@ -88,33 +102,42 @@ function Navbar({
                       {user?.username}
                     </span>
 
-                    <button
-                      onClick={onUploadProfileClick}
-                      className="rm-dropdown-btn"
-                    >
-                      Profile
-                    </button>
 
-                    <button className="rm-dropdown-btn">
+                    <button
+                      className="rm-dropdown-btn"
+                      onClick={() => {
+                        closeDropdown();
+                        // เพิ่มการทำงานของ Setting ตรงนี้
+                      }}
+                    >
                       Setting
                     </button>
 
                     <button
                       className="rm-dropdown-btn"
-                      onClick={() => navigate("/admin/role-requests")}
+                      onClick={() => handleNavigate("/admin/role-requests")}
                     >
-                      Role-requests 
+                      Role-requests
                     </button>
 
                     <button
+                      className="rm-dropdown-btn"
+                      onClick={() => handleNavigate("/edit-profile")}
+                    >
+                      Edit Profile
+                    </button>
+
+                    <button
+                      className="rm-dropdown-btn"
                       onClick={() => {
-                        setIsDropDown(false);
+                        closeDropdown();
                         onLogout();
                       }}
-                      className="rm-dropdown-btn"
                     >
                       Sign Out
                     </button>
+
+                    
 
                   </div>
                 )}

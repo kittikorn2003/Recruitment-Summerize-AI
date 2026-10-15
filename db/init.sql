@@ -2,12 +2,15 @@ CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+    full_name TEXT,
+    phone TEXT;
     email TEXT UNIQUE NOT NULL,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     role TEXT NOT NULL DEFAULT 'user'
         CHECK (role IN ('user', 'hr', 'admin')),
     profile_image TEXT,
+    updated_at TIMESTAMP DEFAULT NOW(),
     created_at TIMESTAMP DEFAULT NOW()
 );
 
