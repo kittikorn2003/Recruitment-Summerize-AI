@@ -1,7 +1,7 @@
 
 const pdfParse = require("pdf-parse");
 const path = require("path");
-const { extractResumeData } = require("../services/aiServices");
+const { extractResumeData,summarizeResume } = require("../services/aiServices");
 const { findResumeById,getAllResumeFromDb,getLatestResumes,countResumes   } = require("../models/resumeModel")
 const { saveResume } = require("../services/resumeService")
 
@@ -145,4 +145,40 @@ const getLatestResumesController = async (req, res) => {
     }
 };
 
-module.exports = { uploadFile,getResumeById,getResume,saveFile,getLatestResumesController, };
+const summarizeResumeController = async (req, res) => {
+    try {
+        const resumeId = Number(req.params.id);
+
+        if (!Number.isInteger(resumeId) || resumeId < 1) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid resume ID",
+            });
+        }
+
+        const resume = await findResumeById(resumeId);
+
+        if (!resume) {
+            return res.status(404).json({
+                success: false,
+                message: "Resume not found",
+            });
+        }
+
+        const summary = await summarizeResume(resume);
+
+        return res.status(200).json({
+            success: true,
+            data: summary,
+        });
+    } catch (error) {
+        console.error("Summarize resume error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to summarize resume",
+        });
+    }
+};
+
+module.exports = { uploadFile,getResumeById,getResume,saveFile,getLatestResumesController,summarizeResumeController };

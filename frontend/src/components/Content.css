@@ -155,8 +155,10 @@
 /* Action area */
 .card-action {
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 8px;
   width: 100%;
 }
 
@@ -313,10 +315,15 @@
 
   .card-action {
     grid-column: 1 / -1;
+    flex-direction: row;
   }
 
   .view-resume {
-    width: 100%;
+    flex: 1;
+    width: auto;
+  }
+  .summarize-btn {
+  flex: 1;
   }
 
   .card-footer {

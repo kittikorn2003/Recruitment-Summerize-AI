@@ -1,5 +1,6 @@
-
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import ResumeSummary from "./Resumesummary";
 import "./Content.css";
 
 const timeAgo = (dateStr) => {
@@ -19,6 +20,41 @@ const timeAgo = (dateStr) => {
 };
 
 function Content({ contentData }) {
+  // summaries[id] = { status: "loading" | "success" | "error", text }
+  const [summaries, setSummaries] = useState({});
+  // which cards currently show their summary panel
+  const [openIds, setOpenIds] = useState({});
+
+  const fetchSummary = async (id) => {
+    setSummaries((prev) => ({ ...prev, [id]: { status: "loading", text: "" } }));
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `http://localhost:3000/api/resumes/${id}/summarize`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const d = response.data?.data;
+      const text = typeof d === "string" ? d : d?.summary ?? "";
+      setSummaries((prev) => ({ ...prev, [id]: { status: "success", text } }));
+    } catch (err) {
+      console.error("Summarize error", err);
+      setSummaries((prev) => ({ ...prev, [id]: { status: "error", text: "" } }));
+    }
+  };
+
+  const toggleSummary = (id) => {
+    if (openIds[id]) {
+      setOpenIds((prev) => ({ ...prev, [id]: false }));
+      return;
+    }
+    setOpenIds((prev) => ({ ...prev, [id]: true }));
+    // Only call the API the first time (or after an error). Later opens
+    // reuse the saved text, so the user isn't charged for another AI call.
+    const existing = summaries[id];
+    if (!existing || existing.status === "error") fetchSummary(id);
+  };
+
   if (!contentData || contentData.length === 0) {
     return (
       <div className="empty-candidates">
@@ -42,6 +78,10 @@ function Content({ contentData }) {
         const skills = Array.isArray(item.skills)
           ? item.skills.slice(0, 3)
           : [];
+
+        const summary = summaries[item.id];
+        const isOpen = !!openIds[item.id];
+        const isLoading = summary?.status === "loading";
 
         return (
           <article className="content-card" key={item.id}>
@@ -106,6 +146,25 @@ function Content({ contentData }) {
                 >
                   View Resume
                 </button>
+
+                <button
+                  type="button"
+                  className="summarize-btn"
+                  onClick={() => toggleSummary(item.id)}
+                  disabled={isLoading}
+                  aria-expanded={isOpen}
+                  aria-controls={`summary-${item.id}`}
+                >
+                  <i
+                    className={`ti ${isOpen && !isLoading ? "ti-chevron-up" : "ti-sparkles"}`}
+                    aria-hidden="true"
+                  />
+                  {isLoading
+                    ? "Summarizing…"
+                    : isOpen
+                    ? "Hide"
+                    : "Summarize"}
+                </button>
               </div>
             </div>
 
@@ -142,6 +201,15 @@ function Content({ contentData }) {
                   {timeAgo(item.created_at)}
                 </time>
               </div>
+            )}
+
+            {isOpen && summary && (
+              <ResumeSummary
+                id={item.id}
+                status={summary.status}
+                text={summary.text}
+                onRetry={() => fetchSummary(item.id)}
+              />
             )}
           </article>
         );
