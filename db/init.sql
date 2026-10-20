@@ -30,6 +30,7 @@ CREATE TABLE resumes (
     content TEXT,
     search_vector tsvector,
     embedding vector(384),
+    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT NOW()
 
 );
