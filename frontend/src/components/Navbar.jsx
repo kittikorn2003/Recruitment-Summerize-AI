@@ -48,7 +48,14 @@ function Navbar({
           >
             Request HR 
           </button>
-
+          
+          <button
+            className="rm-nav-link"
+            onClick={() => handleNavigate("/my-resumes")}
+          >
+            My Resumes
+          </button>
+          
           <a href="/#process" className="rm-nav-link">
             How it works
           </a>
@@ -118,6 +125,12 @@ function Navbar({
                       onClick={() => handleNavigate("/admin/role-requests")}
                     >
                       Role-requests
+                    </button>
+                    <button
+                      className="rm-dropdown-btn"
+                      onClick={() => handleNavigate("/my-resumes")}
+                    >
+                      My Resumes
                     </button>
 
                     <button

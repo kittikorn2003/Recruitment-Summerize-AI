@@ -15,6 +15,7 @@ import RoleRequest from "./pages/RoleRequest";
 import AdminRoleRequests from "./pages/AdminRoleRequests";
 import EditProfile from "./pages/EditProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import MyResumes from "./pages/Myresumes";
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -338,6 +339,17 @@ const handleLandingSearch = (q) => {
               loading={isUserLoading}
             >
               <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-resumes"
+          element={
+            <ProtectedRoute user={user} loading={isUserLoading}>
+              <MyResumes
+                onLogout={handleLogout}
+                onUploadClick={() => setIsUploadOpen(true)}
+              />
             </ProtectedRoute>
           }
         />
