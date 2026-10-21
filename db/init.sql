@@ -29,7 +29,7 @@ CREATE TABLE resumes (
     employment_history JSONB,
     content TEXT,
     search_vector tsvector,
-    embedding vector(384),
+    embedding vector(1024),
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT NOW()
 

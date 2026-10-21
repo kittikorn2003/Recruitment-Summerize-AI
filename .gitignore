@@ -25,5 +25,7 @@ uploads
 *.sln
 *.sw?
 backend/.env
+backend/debug-embedding.js
+backend/test.js
 uploads/role_evidence/*
 !uploads/role_evidence/.gitkeep

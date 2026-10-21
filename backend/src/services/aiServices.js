@@ -96,11 +96,53 @@ Return only the plain-text summary.
   return response.choices[0].message.content.trim();
 };
 
+const createEmbedding = async (text) => {
+    if (!text || !text.trim()) {
+        throw new Error("Text is required for embedding");
+    }
+
+    const OLLAMA_URL =
+        process.env.OLLAMA_URL || "http://10.80.39.41:11434";
+
+    const EMBEDDING_MODEL = "qwen3-embedding:0.6b";
+
+    const response = await fetch(`${OLLAMA_URL}/api/embed`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            model: EMBEDDING_MODEL,
+            input: text,
+        }),
+        signal: AbortSignal.timeout(60000),
+    });
+
+    if (!response.ok) {
+        throw new Error(
+            `Ollama embedding failed: ${response.status} ${await response.text()}`
+        );
+    }
+
+    const data = await response.json();
+    const embedding = data.embeddings?.[0];
+
+    if (!Array.isArray(embedding) || embedding.length !== 1024) {
+        throw new Error(
+            `Invalid embedding dimensions: ${embedding?.length ?? 0}; expected 1024`
+        );
+    }
+
+    return embedding;
+};
+
 
 module.exports = {
     extractResumeData,
     summarizeResume,
+    createEmbedding
 };
+
 
 
 

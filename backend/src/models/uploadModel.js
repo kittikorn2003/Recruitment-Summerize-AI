@@ -1,5 +1,6 @@
 
 const pool = require("../config/db");
+const { createEmbedding } = require("../services/aiServices");
 
 const createResume = async (payload, userId) => {
     const {
@@ -11,8 +12,11 @@ const createResume = async (payload, userId) => {
         employment_history,
         education,
         projects_or_research,
-        content
+        content,
     } = payload;
+
+    // สร้าง Vector จากเนื้อหา Resume
+    const embedding = await createEmbedding(content || "");
 
     const values = [
         userId,
@@ -26,7 +30,8 @@ const createResume = async (payload, userId) => {
         JSON.stringify(projects_or_research || []),
         JSON.stringify(education || []),
         JSON.stringify(employment_history || []),
-        content || ""
+        content || "",
+        JSON.stringify(embedding),
     ];
 
     const result = await pool.query(
@@ -44,11 +49,13 @@ const createResume = async (payload, userId) => {
             education,
             employment_history,
             content,
-            search_vector
+            search_vector,
+            embedding
         )
         VALUES (
             $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-            to_tsvector('english', $12)
+            to_tsvector('english', $12),
+            $13::vector
         )
         RETURNING *
         `,

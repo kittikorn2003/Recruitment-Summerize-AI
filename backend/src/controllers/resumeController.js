@@ -12,7 +12,7 @@ const { findResumeById,
         updateMyResumeStatus,
         deleteMyResume
     } = require("../models/resumeModel")
-const { saveResume } = require("../services/resumeService")
+const { saveResume,updateMyResumeService } = require("../services/resumeService")
 
 const fs = require("fs")
 // console.log(pdfParse)
@@ -289,7 +289,7 @@ const updateMyResumeController = async (req, res) => {
             });
         }
 
-        const updatedResume = await updateMyResume(
+        const updatedResume = await updateMyResumeService(
             resumeId,
             req.user.id,
             updates

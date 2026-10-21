@@ -150,6 +150,7 @@ const getMyResumeById = async (resumeId, userId) => {
 
 
 // Update editable resume fields
+
 const updateMyResume = async (resumeId, userId, updates) => {
     const allowedFields = [
         "full_name",
@@ -161,6 +162,8 @@ const updateMyResume = async (resumeId, userId, updates) => {
         "education",
         "employment_history",
         "projects_or_research",
+        "content",
+        "embedding",
     ];
 
     const fields = Object.keys(updates).filter(
@@ -171,11 +174,31 @@ const updateMyResume = async (resumeId, userId, updates) => {
         return null;
     }
 
-    const values = fields.map((field) => updates[field]);
+    const values = fields.map((field) => {
+        if (field === "embedding") {
+            return JSON.stringify(updates[field]);
+        }
+
+        return updates[field];
+    });
 
     const setClause = fields
-        .map((field, index) => `${field} = $${index + 1}`)
+        .map((field, index) => {
+            if (field === "embedding") {
+                return `embedding = $${index + 1}::vector`;
+            }
+
+            return `${field} = $${index + 1}`;
+        })
         .join(", ");
+
+    // สร้าง search_vector ใหม่จาก content ใหม่
+    const contentIndex = fields.indexOf("content");
+
+    const searchVectorClause =
+        contentIndex >= 0
+            ? `, search_vector = to_tsvector('english', $${contentIndex + 1})`
+            : "";
 
     values.push(resumeId, userId);
 
@@ -183,6 +206,7 @@ const updateMyResume = async (resumeId, userId, updates) => {
         `
         UPDATE resumes
         SET ${setClause}
+            ${searchVectorClause}
         WHERE id = $${values.length - 1}
           AND user_id = $${values.length}
         RETURNING *;
@@ -192,6 +216,7 @@ const updateMyResume = async (resumeId, userId, updates) => {
 
     return result.rows[0] || null;
 };
+
 
 
 // Enable or disable a resume
