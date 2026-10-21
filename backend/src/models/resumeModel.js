@@ -14,21 +14,71 @@ const getAllResumeFromDb = async () => {
     return result.rows;
 }
 
+
 const searchResume = async (
     keyword,
     languages = [],
     limit = 7,
-    offset = 0
+    offset = 0,
+    queryEmbedding = null
 ) => {
     const params = [keyword];
+
+    // Query Embedding เป็น Vector 1024 มิติ
+    params.push(
+        queryEmbedding
+            ? `[${queryEmbedding.join(",")}]`
+            : null
+    );
+
     let languageFilter = "";
 
     if (languages.length > 0) {
         params.push(languages);
+
         languageFilter = `
             AND r.spoken_languages && $${params.length}::text[]
         `;
     }
+
+    // ค้นหาด้วยภาษาอย่างเดียว ให้คงพฤติกรรมเดิม
+    if (!keyword) {
+        params.push(limit);
+        const limitParam = `$${params.length}`;
+
+        params.push(offset);
+        const offsetParam = `$${params.length}`;
+
+        const result = await pool.query(
+            `
+            SELECT
+                r.id,
+                r.full_name,
+                r.skills,
+                r.file_name,
+                r.spoken_languages,
+                r.career_summary,
+                u.username,
+                u.profile_image,
+                r.created_at,
+                r.address,
+                r.education
+            FROM resumes r
+            LEFT JOIN users u ON r.user_id = u.id
+            WHERE r.is_active = TRUE
+                ${languageFilter}
+            ORDER BY r.created_at DESC, r.id DESC
+            LIMIT ${limitParam}
+            OFFSET ${offsetParam}
+            `,
+            params
+        );
+
+        return result.rows;
+    }
+
+    const languageFilterKeyword = languageFilter;
+    const languageFilterVector = languageFilter;
 
     params.push(limit);
     const limitParam = `$${params.length}`;
@@ -38,6 +88,74 @@ const searchResume = async (
 
     const result = await pool.query(
         `
+        WITH keyword_candidates AS (
+            SELECT
+                r.id,
+                ROW_NUMBER() OVER (
+                    ORDER BY
+                        ts_rank_cd(
+                            r.search_vector,
+                            plainto_tsquery('english', $1)
+                        ) DESC,
+                        r.created_at DESC,
+                        r.id DESC
+                ) AS rank_position
+            FROM resumes r
+            WHERE r.is_active = TRUE
+                AND r.search_vector @@ plainto_tsquery('english', $1)
+                ${languageFilterKeyword}
+            ORDER BY
+                ts_rank_cd(
+                    r.search_vector,
+                    plainto_tsquery('english', $1)
+                ) DESC,
+                r.created_at DESC,
+                r.id DESC
+            LIMIT 100
+        ),
+
+        vector_candidates AS (
+            SELECT
+                r.id,
+                ROW_NUMBER() OVER (
+                    ORDER BY
+                        r.embedding <=> $2::vector ASC,
+                        r.created_at DESC,
+                        r.id DESC
+                ) AS rank_position
+            FROM resumes r
+            WHERE r.is_active = TRUE
+                AND r.embedding IS NOT NULL
+                ${languageFilterVector}
+            ORDER BY
+                r.embedding <=> $2::vector ASC,
+                r.created_at DESC,
+                r.id DESC
+            LIMIT 100
+        ),
+
+        fused AS (
+            SELECT
+                id,
+                1.0 / (60 + rank_position) AS rrf_score
+            FROM keyword_candidates
+
+            UNION ALL
+
+            SELECT
+                id,
+                1.0 / (60 + rank_position) AS rrf_score
+            FROM vector_candidates
+        ),
+
+        ranked AS (
+            SELECT
+                id,
+                SUM(rrf_score) AS hybrid_score
+            FROM fused
+            GROUP BY id
+        )
+
         SELECT
             r.id,
             r.full_name,
@@ -50,25 +168,23 @@ const searchResume = async (
             r.created_at,
             r.address,
             r.education
-        FROM resumes r
+        FROM ranked h
+        JOIN resumes r ON r.id = h.id
         LEFT JOIN users u ON r.user_id = u.id
-        WHERE
-            r.is_active = TRUE
-
-            AND (
-                $1 = ''
-                OR r.search_vector @@ plainto_tsquery('english', $1)
-            )
-            ${languageFilter}
-        ORDER BY r.created_at DESC, r.id DESC
+        WHERE r.is_active = TRUE
+        ORDER BY
+            h.hybrid_score DESC,
+            r.created_at DESC,
+            r.id DESC
         LIMIT ${limitParam}
-        OFFSET ${offsetParam};
+        OFFSET ${offsetParam}
         `,
         params
     );
 
     return result.rows;
 };
+
 const getLatestResumes = async (limit = 6, offset = 0) => {
     const result = await pool.query(
         `
